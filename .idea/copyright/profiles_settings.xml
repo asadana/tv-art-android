@@ -1,0 +1,8 @@
+<component name="CopyrightManager">
+  <settings default="TV Art Copyright">
+    <module2copyright>
+      <element module="Project Source Files" copyright="TV Art Copyright" />
+      <element module="All" copyright="TV Art Copyright" />
+    </module2copyright>
+  </settings>
+</component>
