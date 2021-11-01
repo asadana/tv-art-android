@@ -21,15 +21,20 @@ package dev.asadana.tvart
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 
-/** Loads [PlaybackVideoFragment]. */
-class PlaybackActivity : FragmentActivity() {
+class DisplayArtActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_display_art)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(android.R.id.content, PlaybackVideoFragment())
-                    .commit()
+                .replace(R.id.display_art_fragment, DisplayArtFragment())
+                .commitNow()
         }
+    }
+
+    companion object {
+        const val ART = "Art"
+        const val SHARED_ELEMENT_NAME = "hero"
     }
 }
