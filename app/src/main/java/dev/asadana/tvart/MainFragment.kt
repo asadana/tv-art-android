@@ -18,7 +18,6 @@
 
 package dev.asadana.tvart
 
-import java.util.Collections
 import java.util.Timer
 import java.util.TimerTask
 
@@ -51,6 +50,8 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import dev.asadana.tvart.data.Art
+import dev.asadana.tvart.data.ArtList
 
 /**
  * Loads a grid of cards with movies to browse.
@@ -105,20 +106,18 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun loadRows() {
-        val list = MovieList.list
+        val list = ArtList.list
 
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         val cardPresenter = CardPresenter()
 
-        for (i in 0 until NUM_ROWS) {
-            if (i != 0) {
-                Collections.shuffle(list)
-            }
+        for (i in 0 until ArtList.ART_CATEGORY.size) {
+            // Add
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             for (j in 0 until NUM_COLS) {
                 listRowAdapter.add(list[j % 5])
             }
-            val header = HeaderItem(i.toLong(), MovieList.MOVIE_CATEGORY[i])
+            val header = HeaderItem(i.toLong(), ArtList.ART_CATEGORY[i])
             rowsAdapter.add(ListRow(header, listRowAdapter))
         }
 
@@ -126,9 +125,9 @@ class MainFragment : BrowseSupportFragment() {
 
         val mGridPresenter = GridItemPresenter()
         val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-        gridRowAdapter.add(resources.getString(R.string.grid_view))
+        gridRowAdapter.add(getString(R.string.grid_view))
         gridRowAdapter.add(getString(R.string.error_fragment))
-        gridRowAdapter.add(resources.getString(R.string.personal_settings))
+        gridRowAdapter.add(getString(R.string.personal_settings))
         rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
 
         adapter = rowsAdapter
@@ -137,7 +136,7 @@ class MainFragment : BrowseSupportFragment() {
     private fun setupEventListeners() {
         setOnSearchClickedListener {
             Toast.makeText(context!!, "Implement your own in-app search", Toast.LENGTH_LONG)
-                    .show()
+                .show()
         }
 
         onItemViewClickedListener = ItemViewClickedListener()
@@ -146,21 +145,23 @@ class MainFragment : BrowseSupportFragment() {
 
     private inner class ItemViewClickedListener : OnItemViewClickedListener {
         override fun onItemClicked(
-                itemViewHolder: Presenter.ViewHolder,
-                item: Any,
-                rowViewHolder: RowPresenter.ViewHolder,
-                row: Row) {
+            itemViewHolder: Presenter.ViewHolder,
+            item: Any,
+            rowViewHolder: RowPresenter.ViewHolder,
+            row: Row
+        ) {
 
-            if (item is Movie) {
-                Log.d(TAG, "Item: " + item.toString())
-                val intent = Intent(context!!, DetailsActivity::class.java)
-                intent.putExtra(DetailsActivity.MOVIE, item)
+            if (item is Art) {
+                Log.d(TAG, "Item: $item")
+                val intent = Intent(context!!, DisplayArtActivity::class.java)
+                intent.putExtra(DisplayArtActivity.ART, item)
 
                 val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        activity!!,
-                        (itemViewHolder.view as ImageCardView).mainImageView,
-                        DetailsActivity.SHARED_ELEMENT_NAME)
-                        .toBundle()
+                    activity!!,
+                    (itemViewHolder.view as ImageCardView).mainImageView,
+                    DisplayArtActivity.SHARED_ELEMENT_NAME
+                )
+                    .toBundle()
                 startActivity(intent, bundle)
             } else if (item is String) {
                 if (item.contains(getString(R.string.error_fragment))) {
@@ -174,9 +175,11 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
-        override fun onItemSelected(itemViewHolder: Presenter.ViewHolder?, item: Any?,
-                                    rowViewHolder: RowPresenter.ViewHolder, row: Row) {
-            if (item is Movie) {
+        override fun onItemSelected(
+            itemViewHolder: Presenter.ViewHolder?, item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder, row: Row
+        ) {
+            if (item is Art) {
                 mBackgroundUri = item.backgroundImageUrl
                 startBackgroundTimer()
             }
@@ -187,16 +190,18 @@ class MainFragment : BrowseSupportFragment() {
         val width = mMetrics.widthPixels
         val height = mMetrics.heightPixels
         Glide.with(context!!)
-                .load(uri)
-                .centerCrop()
-                .error(mDefaultBackground)
-                .into<SimpleTarget<Drawable>>(
-                        object : SimpleTarget<Drawable>(width, height) {
-                            override fun onResourceReady(drawable: Drawable,
-                                                         transition: Transition<in Drawable>?) {
-                                mBackgroundManager.drawable = drawable
-                            }
-                        })
+            .load(uri)
+            .centerCrop()
+            .error(mDefaultBackground)
+            .into<SimpleTarget<Drawable>>(
+                object : SimpleTarget<Drawable>(width, height) {
+                    override fun onResourceReady(
+                        drawable: Drawable,
+                        transition: Transition<in Drawable>?
+                    ) {
+                        mBackgroundManager.drawable = drawable
+                    }
+                })
         mBackgroundTimer?.cancel()
     }
 
@@ -233,12 +238,12 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     companion object {
-        private val TAG = "MainFragment"
+        private const val TAG = "MainFragment"
 
-        private val BACKGROUND_UPDATE_DELAY = 300
-        private val GRID_ITEM_WIDTH = 200
-        private val GRID_ITEM_HEIGHT = 200
-        private val NUM_ROWS = 6
-        private val NUM_COLS = 15
+        private const val BACKGROUND_UPDATE_DELAY = 300
+        private const val GRID_ITEM_WIDTH = 200
+        private const val GRID_ITEM_HEIGHT = 200
+        private const val NUM_ROWS = 6
+        private const val NUM_COLS = 15
     }
 }

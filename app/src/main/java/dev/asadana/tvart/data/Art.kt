@@ -16,34 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.asadana.tvart
+package dev.asadana.tvart.data
 
 import java.io.Serializable
 
 /**
- * Movie class represents video entity with title, description, image thumbs and video url.
+ * Art class represents video entity with title, description, image thumbs and full image url.
  */
-data class Movie(
+data class Art(
         var id: Long = 0,
         var title: String? = null,
         var description: String? = null,
         var backgroundImageUrl: String? = null,
         var cardImageUrl: String? = null,
-        var videoUrl: String? = null,
-        var studio: String? = null
+        var fullImageUrl: String? = null
 ) : Serializable {
 
     override fun toString(): String {
-        return "Movie{" +
+        return "Art{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", videoUrl='" + videoUrl + '\'' +
+                ", description='" + description + '\'' +
+                ", fullImageUrl='" + fullImageUrl + '\'' +
                 ", backgroundImageUrl='" + backgroundImageUrl + '\'' +
                 ", cardImageUrl='" + cardImageUrl + '\'' +
                 '}'
-    }
-
-    companion object {
-        internal const val serialVersionUID = 727566175075960653L
     }
 }

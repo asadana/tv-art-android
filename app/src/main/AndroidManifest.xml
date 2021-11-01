@@ -51,10 +51,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PlaybackActivity"
+            android:name=".DisplayArtActivity"
             android:exported="false" />
         <activity
             android:name=".BrowseErrorActivity"
